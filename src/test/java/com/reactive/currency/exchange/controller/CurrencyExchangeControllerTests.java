@@ -53,7 +53,6 @@ public class CurrencyExchangeControllerTests {
     }
 
 
-
     @Test
     public void testGetExchangeRatesForNonexistentCurrency() {
         String currency = "XYZ";
@@ -107,6 +106,28 @@ public class CurrencyExchangeControllerTests {
                     assertEquals(expectedFromToRate.getTo(), responseFromToRate.getTo());
                     assertEquals(expectedFromToRate.getRate(), responseFromToRate.getRate(), 0.0001);
                 });
+    }
+
+    @Test
+    public void testGetAllExchangeRatesWhenEmpty() {
+        when(repository.findAll()).thenReturn(Flux.empty());
+
+        webTestClient.get().uri("/api/exchange-rates")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(ExchangeRate.class)
+                .value(responseExchangeRates -> {
+                    assertEquals(0, responseExchangeRates.size());
+                });
+    }
+
+    @Test
+    public void testGetExchangeRatesForInvalidCurrency() {
+        String invalidCurrency = "INVALID";
+
+        webTestClient.get().uri("/api/get-exchange-rates-for/" + invalidCurrency)
+                .exchange()
+                .expectStatus().isNotFound();
     }
 
 
