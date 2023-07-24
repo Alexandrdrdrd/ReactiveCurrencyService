@@ -3,7 +3,6 @@ package com.reactive.currency.exchange.controller;
 import com.reactive.currency.exchange.entity.ExchangeRate;
 import com.reactive.currency.exchange.entity.FromToRate;
 import com.reactive.currency.exchange.repository.ExchangeRatesRepository;
-import com.reactive.currency.exchange.service.CurrencyExchangeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +38,7 @@ public class CurrencyExchangeController {
             return repository.findAll()
                     .switchIfEmpty(Flux.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "No exchange rates found")));
         } else {
-            return repository.findDistinctFirstByCc(currency)
+            return repository.findLastByCc(currency)
                     .flatMapMany(currencyRate -> repository.findAll()
                             .map(exchangeRate -> {
                                 double updatedRate = currencyRate.getRate() / exchangeRate.getRate();
@@ -54,8 +53,8 @@ public class CurrencyExchangeController {
     @GetMapping("/currency-exchange/from/{from}/to/{to}")
     public Mono<FromToRate> getExchangeRatesForPair(@PathVariable String from, @PathVariable String to) {
 
-        Mono<Double> rateForFromCurrencyMono = repository.findDistinctFirstByCc(from).map(ExchangeRate::getRate);
-        Mono<Double> rateForToCurrencyMono = repository.findDistinctFirstByCc(to).map(ExchangeRate::getRate);
+        Mono<Double> rateForFromCurrencyMono = repository.findLastByCc(from).map(ExchangeRate::getRate);
+        Mono<Double> rateForToCurrencyMono = repository.findLastByCc(to).map(ExchangeRate::getRate);
 
         if (from.equals(to)) {
             return Mono.just(new FromToRate(from, to, 1.0));

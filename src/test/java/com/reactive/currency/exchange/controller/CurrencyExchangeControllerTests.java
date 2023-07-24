@@ -56,7 +56,7 @@ public class CurrencyExchangeControllerTests {
     @Test
     public void testGetExchangeRatesForNonexistentCurrency() {
         String currency = "XYZ";
-        when(repository.findDistinctFirstByCc(currency)).thenReturn(Mono.empty());
+        when(repository.findLastByCc(currency)).thenReturn(Mono.empty());
 
         webTestClient.get().uri("/api/get-exchange-rates-for/" + currency)
                 .exchange()
@@ -91,8 +91,8 @@ public class CurrencyExchangeControllerTests {
         ExchangeRate fromExchangeRate = new ExchangeRate(1, "USD to Any Currency", fromRate, fromCurrency, "24.07.2023");
         ExchangeRate toExchangeRate = new ExchangeRate(2, "EUR to Any Currency", toRate, toCurrency, "24.07.2023");
 
-        when(repository.findDistinctFirstByCc(fromCurrency)).thenReturn(Mono.just(fromExchangeRate));
-        when(repository.findDistinctFirstByCc(toCurrency)).thenReturn(Mono.just(toExchangeRate));
+        when(repository.findLastByCc(fromCurrency)).thenReturn(Mono.just(fromExchangeRate));
+        when(repository.findLastByCc(toCurrency)).thenReturn(Mono.just(toExchangeRate));
 
         double expectedRate = fromRate / toRate;
         FromToRate expectedFromToRate = new FromToRate(fromCurrency, toCurrency, expectedRate);

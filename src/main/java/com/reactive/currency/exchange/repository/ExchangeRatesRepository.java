@@ -15,5 +15,5 @@ public interface ExchangeRatesRepository extends ReactiveCrudRepository<Exchange
     Flux<ExchangeRate> findAll();
 
     @Query("SELECT * FROM exchange_rates WHERE cc = :cc ORDER BY id DESC LIMIT 1")
-    Mono<ExchangeRate> findDistinctFirstByCc(String cc);
+    Mono<ExchangeRate> findLastByCc(String cc);
 }
