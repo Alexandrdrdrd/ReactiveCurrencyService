@@ -2,17 +2,18 @@ package com.reactive.currency.exchange.repository;
 
 import com.reactive.currency.exchange.entity.ExchangeRate;
 import org.springframework.data.r2dbc.repository.Query;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
 
 /**
  * Repository interface for interacting with the 'exchange_rates' table in the database.
  * This interface extends the ReactiveCrudRepository interface, providing basic CRUD operations for the 'exchange_rates' table.
  */
 @Repository
-public interface ExchangeRatesRepository extends ReactiveCrudRepository<ExchangeRate, Integer> {
+public interface ExchangeRatesRepository extends R2dbcRepository<ExchangeRate, Integer> {
 
     /**
      * Retrieve all exchange rates from the 'exchange_rates' table, ordered by id in descending order, with a limit of 61 elements.
@@ -21,7 +22,6 @@ public interface ExchangeRatesRepository extends ReactiveCrudRepository<Exchange
      */
     @Query("SELECT * FROM exchange_rates ORDER BY id DESC LIMIT 61")
     Flux<ExchangeRate> findAll();
-
 
     /**
      * Retrieve the last exchange rate with the specified currency code (cc) from the 'exchange_rates' table, ordered by id in descending order.

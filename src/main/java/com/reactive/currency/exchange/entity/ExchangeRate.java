@@ -1,5 +1,6 @@
 package com.reactive.currency.exchange.entity;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -23,6 +24,7 @@ public class ExchangeRate {
     @Column("cc")
     String cc;
     @Column("exchangedate")
+            
     String exchangedate;
 
 
